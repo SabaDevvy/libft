@@ -1,0 +1,17 @@
+# Ignora tutti i file temporanei di backup
+*~
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# Ignora i file generati da editor o IDE comuni
+*.log
+*.idea/
+.vscode/
+*.iml
+
+# Ignora tutti i file chiamati 'tags' in qualsiasi subdirectory
+**/tags
