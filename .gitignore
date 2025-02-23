@@ -1,17 +1,23 @@
-# Ignora tutti i file temporanei di backup
-*~
-*.tmp
-*.bak
+# Backups and temporary files
+*.*~
 *.swp
-*.swo
-*.DS_Store
-Thumbs.db
+*.bak
+*.tmp
+*.out
+*.o
 
-# Ignora i file generati da editor o IDE comuni
-*.log
-*.idea/
-.vscode/
-*.iml
+# Ignore .vscode/ in every subdirectory
+**/.vscode/
 
-# Ignora tutti i file chiamati 'tags' in qualsiasi subdirectory
-**/tags
+# Ignore macOS metadata files
+**/.DS_Store/
+
+# Tags
+tags
+
+# Test files
+test.c
+
+# Ignore objs/ and dSYM/ directories recursively
+**/objs/
+**/*.dSYM/
