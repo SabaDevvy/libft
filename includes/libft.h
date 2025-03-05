@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 04:15:21 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/05 04:38:15 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/03/06 04:01:38 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define LIBFT_H
 
 # include <stddef.h>
+# include <limits.h>
+
+# include "colors.h"
 
 // List structure definition
 typedef struct s_list
@@ -77,4 +80,4 @@ void	ft_lstclear(t_list **lst, void (*del)(void*));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
-# endif
+#endif
