@@ -1,41 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strarr_init.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/10 18:05:30 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/10 02:56:39 by gsabatin         ###   ########.fr       */
+/*   Created: 2025/03/13 15:36:23 by gsabatin          #+#    #+#             */
+/*   Updated: 2025/03/14 10:09:45 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
 #include <stdlib.h>
 
-char	*ft_strdup(const char *s)
+/**
+ * @brief Creates a new array with just one string
+ *
+ * @param str The string to add (can be NULL)
+ *
+ * @return New array or NULL on allocation failure
+ */
+char	**ft_strarrinit(const char *str)
 {
-	char	*ptr;
-	size_t	len;
-	size_t	i;
+	char	**new_arr;
 
-	len = ft_strlen(s);
-	ptr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!ptr)
+	new_arr = (char **)malloc(sizeof(char *) * 2);
+	if (!new_arr)
 		return (NULL);
-	i = 0;
-	while (i < len)
+	new_arr[0] = ft_strdup_safe(str);
+	if (str && !new_arr[0])
 	{
-		ptr[i] = s[i];
-		i++;
+		free(new_arr);
+		return (NULL);
 	}
-	ptr[i] = '\0';
-	return (ptr);
-}
-
-char	*ft_strdup_safe(const char *str)
-{
-	if (str)
-		return (ft_strdup(str));
-	return (NULL);
+	new_arr[1] = NULL;
+	return (new_arr);
 }

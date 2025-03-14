@@ -6,19 +6,22 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 18:18:17 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/02/26 19:08:31 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:28:47 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/libft.h"
 #include <stdlib.h>
 
 /**
  * @brief creats a pointer containing chars from starting index for len bytes
- * @param [s] string on which the function works
- * @param [start] starting index
- * @param [len] number of chars to copy from start index
+ *
+ * @param s string on which the function works
+ * @param start starting index
+ * @param len number of chars to copy from start index
+ *
  * @note if len would go out of s, len is set to strlen - start index
+ *
  * @return pointer to the mallocd substring
 **/
 char	*ft_substr(char const *s, unsigned int start, size_t len)

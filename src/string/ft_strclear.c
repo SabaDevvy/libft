@@ -1,41 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/10 18:05:30 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/10 02:56:39 by gsabatin         ###   ########.fr       */
+/*   Created: 2025/03/06 19:10:53 by gsabatin          #+#    #+#             */
+/*   Updated: 2025/03/13 15:49:18 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
 #include <stdlib.h>
 
-char	*ft_strdup(const char *s)
-{
-	char	*ptr;
-	size_t	len;
-	size_t	i;
+/*
+** @brief Frees a string and sets the pointer to NULL
 
-	len = ft_strlen(s);
-	ptr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!ptr)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		ptr[i] = s[i];
-		i++;
-	}
-	ptr[i] = '\0';
-	return (ptr);
-}
-
-char	*ft_strdup_safe(const char *str)
+** @param str Pointer to the string to be freed
+*/
+void	ft_strclear(char **str)
 {
-	if (str)
-		return (ft_strdup(str));
-	return (NULL);
+	if (!str || !*str)
+		return ;
+	free(*str);
+	*str = NULL;
 }

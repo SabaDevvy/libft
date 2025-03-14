@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 04:15:21 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/06 04:01:38 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/03/17 13:56:04 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 # define LIBFT_H
 
 # include <stddef.h>
+# include <stdbool.h>
 # include <limits.h>
 
 # include "colors.h"
+
+# define ABS(X) (((X) * ((X) >= 0)) + (-(X)) * ((X) < 0))
+# define MAX(a, b) ((a) * ((a) >= (b)) + (b) * ((b) > (a)))
+# define MIN(a, b) ((a) * ((a) <= (b)) + (b) * ((b) < (a)))
 
 // List structure definition
 typedef struct s_list
@@ -38,16 +43,27 @@ int		ft_abs(int n);
 int		*ft_arrdup(const int *src, size_t size);
 // String manipulation
 size_t	ft_strlen(const char *s);
+size_t	ft_strlen_safe(const char *s);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+size_t	ft_strcpy_at(char *dst, size_t *dst_index, const char *src);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_stroccurences(const char *str, const char *little);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strrchr(const char *s, int c);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_strdup(const char *s);
+char	*ft_strdup_safe(const char *str);
+char	*ft_strappend(char *s1, const char *s2);
+char	*ft_strappend_sep_term(char *s1, const char *s2,
+			const char *sep, const char *term);
+char	*ft_strappend_clear_s2(char *s1, char **s2_ptr);
+int		ft_strappend_replace(char **s1_ptr, char **s2_ptr, bool clear_s2);
 // String transformation
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin_sep_term(const char *s1, const char *s2,
+			const char *sep, const char *term);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 char	**ft_split_argv(char const *s, char c);
@@ -56,6 +72,20 @@ long	ft_atol(const char *str);
 char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
+// String array
+char	**ft_strarrinit(const char *str);
+size_t	ft_strarrlen(char **str_arr);
+size_t	ft_strarrlen_safe(char **str_arr);
+char	**ft_strarrjoin(char **str_arr, const char *str);
+char	**ft_strarrappend(char **str_arr, const char *str);
+char	**ft_strarrappend_shallow(char **str_arr, char *str);
+char	**ft_strarrappend_free(char **str_arr, char *str);
+char	**ft_strarrappend_clear_s2(char **str_arr, char **str_ptr);
+int		ft_strarrappend_replace(char ***str_arr_ptr, char **str_ptr,
+			int clear_s2);
+// Clear
+void	ft_strclear(char **str);
+void	ft_strarrclear(char ***str_arr);
 // Memory manipulation
 void	*ft_memset(void *s, int c, size_t n);
 void	ft_bzero(void *s, size_t n);

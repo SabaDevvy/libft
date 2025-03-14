@@ -16,8 +16,14 @@
 tags
 
 # Test files
-test.c
+*test*
+*.a
+*.exe
 
-# Ignore objs/ and dSYM/ directories recursively
+# Don't ignore test inside of src
+!src/**/*test*
+
+# Compilation outputs
 **/objs/
+**/debug/
 **/*.dSYM/

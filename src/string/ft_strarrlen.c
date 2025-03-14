@@ -1,46 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strarrlen.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 16:35:06 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/13 13:54:15 by gsabatin         ###   ########.fr       */
+/*   Created: 2025/03/06 16:10:40 by gsabatin          #+#    #+#             */
+/*   Updated: 2025/03/10 01:02:38 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
 
 /*
- * @brief Gets size of string
- * @attention Don't pass null pointers.
- *
- * @return size of string
+* @brief Counts the number of elements in a NULL-terminated string array
+* @attention Don't pass str_arr = NULL
+* @param [str_arr] array of char pointers
+*
+* @return number of elements in strarr
 */
-size_t	ft_strlen(const char *s)
+size_t	ft_strarrlen(char **str_arr)
 {
 	size_t	len;
 
 	len = 0;
-	while (s[len])
+	while (str_arr[len])
 		len++;
 	return (len);
 }
 
 /*
- * @brief Gets size of string. If string is null it returns 0.
+ * @brief Counts the number of elements in a NULL-terminated string array
+ * @param [str_arr] array of char pointers
  *
- * @return Size of string. 0 if size = 0 or string is NULL.
+ * @return number of elements in strarr. 0 if 0 elements of str_arr = NULL
 */
-size_t	ft_strlen_safe(const char *s)
+size_t	ft_strarrlen_safe(char **str_arr)
 {
 	size_t	len;
 
-	if (!s)
-		return (0);
 	len = 0;
-	while (s[len])
+	if (!str_arr)
+		return (0);
+	while (str_arr[len])
 		len++;
 	return (len);
 }
