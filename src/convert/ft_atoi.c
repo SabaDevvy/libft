@@ -6,11 +6,11 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 17:26:34 by gsabatin          #+#    #+#             */
-/*   Updated: 2024/12/10 17:39:03 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:49:56 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/libft.h"
 
 int	ft_atoi(const char *nptr)
 {
