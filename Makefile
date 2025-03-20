@@ -103,40 +103,52 @@ TEST_FILES			:= test.c
 # CFLAGS				+= $(addprefix -I, $(INCLUDES_DIRS))
 # $(info $(INCLUDES_DIRS))
 
+define log_msg
+	printf '[%s]$(1)[$(PROJECT)]	[%s]	%b$(RST)\n' "$(LOG_TIME)" "$(2)" "$(3)"
+endef
+
+define log_ers
+	@printf '$(ERS)[%s]$(1)[$(PROJECT)]	[%s]	%b$(RST)\r' "$(LOG_TIME)" "$(2)" "$(3)"
+endef
+
+define log_obg_det
+	@printf "[%s]$(YLW)[$(PROJECT)]	[COMPILE]	Compiling $(YLWB)%-42s$(YLW) in %s$(RST)\n" "$(LOG_TIME)" "$(1)" "$(realpath $(dir $(2)))"
+endef
+
 all: validate_env
 	@mkdir -p $(sort $(dir $(OBJS)))
 	$(MAKE) $(NAME)
 
 $(NAME): $(OBJS)
-	@echo "$(ERS)[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[COMPILE]	[$(PROJECT)] src files successfully compiled$(RST)"
-	@echo "[$(LOG_TIME)]$(YLWB)[$(PROJECT)]	[COMPILE]	Compiling archive [$(NAME)]...$(RST)"
+	$(call log_ers,$(YLW),COMPILE,[$(PROJECT)] src files successfully compiled\n)
+	$(call log_msg,$(YLWB),COMPILE,Compiling archive [$(NAME)]...)
 	$(AR) $(NAME) $(OBJS)
-	@echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[SUCCESS]	Exe [$(NAME)] successfully compiled!$(RST)"
+	$(call log_msg,$(GRNB),SUCCESS,Exe [$(NAME)] successfully compiled!)
 
 test: all build-libs
-	@echo "$(ERS)[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[COMPILE]	[$(PROJECT)] src files successfully compiled$(RST)"
-	@echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[COMPILE]	Compiling exe [$(NAME_TEST)]...$(RST)"
+	$(call log_ers,$(YLW),COMPILE,[$(PROJECT)] src files successfully compiled)
+	$(call log_msg,$(YLW),COMPILE,Compiling exe [$(NAME_TEST)]...)
 	$(CC) $(CFLAGS) $(TEST_FILES) -L. -l$(subst lib,,$(PROJECT)) $(LIBS_LINKS) -o $(NAME_TEST)
-	@echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[SUCCESS]	Exe [$(NAME_TEST)] successfully compiled!$(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[INFO]		Running [$(NAME_TEST)]...$(RST)"
+	$(call log_msg,$(GRNB),SUCCESS,Exe [$(NAME_TEST)] successfully compiled!)
+	$(call log_msg,$(BLU),RUN,	Running [$(NAME_TEST)]...)
 	echo "-----------------------------------------"
 	./$(NAME_TEST) $(ARGS)
 	echo "\n-----------------------------------------"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(DEPS)
 ifeq ($(DETAILS),1)
-	@echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[COMPILE]	Compiling $(YLWB)$<$(YLW) in $(OBJS_DIR)$(RST)"
+	$(call log_obg_det,$<,$@)
 else
-	@printf "$(ERS)[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[COMPILE]	Compiling $(YLWB)$<$(RST)\r"
+	$(call log_ers,$(YLW),COMPILE,Compiling $(YLWB)$<$)
 endif
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[CLEAN]		Cleaning [$(NAME)] object files...$(RST)"
+	$(call log_msg,$(RED),CLEAN,	Cleaning [$(NAME)] object files...)
 	$(RM) $(OBJS_DIR)
 
 fclean: clean
-	@echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[CLEAN]		Full cleaning: Removing [$(NAME)]...$(RST)"
+	$(call log_msg,$(REDB),FCLEAN,Full cleaning: Removing [$(NAME)]...)
 	$(RM) $(NAME) $(DEBUG_DIR)
 
 re:
@@ -144,27 +156,25 @@ re:
 	$(MAKE) all
 
 validate_env: # NAME=$(...)
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[INFO]		Checking [$(NAME)] environment...$(RST)"
 	# Check if required libs paths exist
 	@for library in $(LIBS); do \
 		if [ ! -d "$(LIBS_DIR)$$library" ]; then \
-			echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[ERROR]		$$library directory not found!$(RST)"; \
-			echo "$(YLW)					-> Run: [$(YLWB)make clone_libs / make update_submodules$(YLW)] and import external libraries if there are any.$(RST)" ; \
+			$(call log_msg,$(REDB),ERROR,	$$library directory not found!); \
+			$(call log_msg,$(YLW),INFO,	-> Run: [$(YLWB)make clone_libs / make update_submodules$(YLW)] and import external libraries if there are any.) ; \
 			exit 1 ; \
 		fi; \
 	done
 	# Check for outdated or uninitialized submodules
 	@if git submodule status --recursive | grep '^[+-]' > /tmp/submodule_issues; then \
-		echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[ERROR]		Some submodules are outdated or not initialized!$(RST)"; \
+		$(call log_msg,$(REDB),ERROR,	Some submodules are outdated or not initialized!); \
 		while read -r line; do \
 			submodule=$$(echo $$line | awk '{print $$2}'); \
 			submodule_name=$$(basename $$submodule); \
 			if echo "$$line" | grep -q '^+'; then \
-				echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[WARNING]	Submodule $$submodule is not on tracked commit.$(RST)"; \
-				echo "$(YLW)					-> Git add and commit to update submodule commit, or run [$(YLWB)make update_submodules$(YLW)] to set it back to tracked commit.$(RST)"; \
+				$(call log_msg,$(YLW),WARNING,Submodule $$submodule is not on tracked commit.); \
+				$(call log_msg,$(YLW),INFO,	-> Git add and commit to update submodule commit, or run [$(YLWB)make update_submodules$(YLW)] to set it back to tracked commit.); \
 			elif echo "$$line" | grep -q '^-'; then \
-				echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[ERROR]		Submodule $$submodule is not initialized!. \
-				Run: [$(YLWB)make clone_libs / make update_submodules$(RED)]$(RST)"; \
+				$(call log_msg,$(RED),ERROR,	Submodule $$submodule is not initialized!. Run: [$(YLWB)make clone_libs / make update_submodules$(RED)]); \
 				exit 1; \
 			fi; \
 		done < /tmp/submodule_issues; \
@@ -173,56 +183,56 @@ validate_env: # NAME=$(...)
 	# Checks uncommitted changes
 	@for submodule in $(LIBS_SUBMODULE); do \
 		if cd $(LIBS_DIR)$$submodule && git status --porcelain | grep -q .; then \
-			echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[WARNING]	Detected changes in submodule [$(LIBS_DIR)$$submodule]. Remember to commit in modified submodules!$(RST)"; \
+			$(call log_msg,$(YLW),WARNING,Detected changes in submodule [$(LIBS_DIR)$$submodule]. Remember to commit in modified submodules!); \
 		fi; \
 		cd $(CURDIR); \
 	done
 
 update_submodules:
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[INFO]		Initializing/updating submodules [$(LIBS_SUBMODULE)]...$(RST)"
+	$(call log_msg,$(BLU),INFO,	Initializing/updating submodules [$(LIBS_SUBMODULE)]...)
 	@git submodule update --init --recursive
-	@echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[SUCCESS]	All submodules are now initialized and up to date!$(RST)"
+	$(call log_msg,$(GRN),SUCCESS,All submodules are now initialized and up to date!)
 
 clone_repos:
 	@if [ -z "$(LIBS_PRIVATE)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		No private libraries to clone!$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No private libraries to clone!); \
 	else \
 		for library in $(LIBS_PRIVATE); do \
-			echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[INFO]		Cloning [$(BLUB)$$library$(BLU)] in $(LIBS_DIR)$$library$(RST)"; \
+			$(call log_msg,$(BLU),INFO,	Cloning [$(BLUB)$$library$(BLU)] in $(LIBS_DIR)$$library); \
 			git clone $(GITHUB_URL)$$library.git $(LIBS_DIR)$$library; \
 		done; \
-		echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[SUCCESS]	All needed private libraries have been cloned!$(RST)"; \
+		$(call log_msg,$(GRN),SUCCESS,All needed private libraries have been cloned!); \
 	fi
 
 build-libs:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		No libraries to build.$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No libraries to build.); \
 	else \
-		echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[INFO]		Building libraries...$(RST)"; \
+		$(call log_msg,$(BLUB),INFO,	Building libraries...); \
 		for lib_dir in $(LIBS_DIRS); do \
-			echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[BUILD]		Building in $$lib_dir$(RST)"; \
+			$(call log_msg,$(BLU),BUILD,	Building in $$lib_dir); \
 			$(MAKE) -C $$lib_dir; \
 		done; \
 	fi
 
 re-build-libs:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		No libraries to rebuild.$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No libraries to rebuild.); \
 	else \
-		@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[INFO]		Rebuilding libraries...$(RST)"; \
-		@for lib_dir in $(LIBS_DIRS); do \
-			echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[BUILD]		Rebuilding in $$lib_dir$(RST)"; \
+		$(call log_msg,$(BLUB),INFO,	Rebuilding libraries...); \
+		for lib_dir in $(LIBS_DIRS); do \
+			$(call log_msg,$(BLU),BUILD,	Rebuilding in $$lib_dir); \
 			$(MAKE) -C $$lib_dir re; \
 		done; \
 	fi
 
 clean-deep:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		No libraries to clean.$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No libraries to clean.); \
 	else \
-		echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[DEEP CLEAN]	Cleaning all dependent libraries: [$(LIBS)]...$(RST)"; \
+		$(call log_msg,$(REDB),DEEP CLEAN,	Cleaning all dependent libraries: [$(LIBS)]...); \
 		for lib_dir in $(LIBS_DIRS); do \
-			echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[CLEAN]		Cleaning in $$lib_dir$(RST)"; \
+			$(call log_msg,$(RED),CLEAN,	Cleaning in $$lib_dir); \
 			$(MAKE) -C $$lib_dir clean; \
 		done; \
 		$(MAKE) clean; \
@@ -230,11 +240,11 @@ clean-deep:
 
 fclean-deep:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		No libraries to full clean.$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No libraries to full clean.); \
 	else \
-		echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[DEEP FCLEAN]	Full Cleaning all dependent libraries: [$(LIBS)]...$(RST)"; \
+		$(call log_msg,$(REDB),DEEP FCLEAN,Full Cleaning all dependent libraries: [$(LIBS)]...); \
 		for lib_dir in $(LIBS_DIRS); do \
-			echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[FCLEAN]	Full cleaning in $$lib_dir$(RST)"; \
+			$(call log_msg,$(RED),FCLEAN,Full cleaning in $$lib_dir); \
 			$(MAKE) -C $$lib_dir fclean; \
 		done; \
 		$(MAKE) fclean; \
@@ -242,11 +252,11 @@ fclean-deep:
 
 re-deep:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]  No libraries to re-make.$(RST)"; \
+		$(call log_msg,$(YLW),INFO,	No libraries to re-make.); \
 	else \
-		echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[REBUILD]	Completely rebuilding all libraries and project...$(RST)"; \
+		$(call log_msg,$(BLUB),REBUILD,Completely rebuilding all libraries and project...); \
 		for lib_dir in $(LIBS_DIRS); do \
-			echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[REBUILD]	Rebuilding in $$lib_dir$(RST)"; \
+			$(call log_msg,$(BLU),REBUILD,Rebuilding in $$lib_dir); \
 			$(MAKE) -C $$lib_dir re; \
 		done; \
 		$(MAKE) re; \
@@ -257,49 +267,52 @@ ASAN_CHECK				= $(shell $(CC) -fsanitize=address -x c -c /dev/null -o /dev/null 
 debug:
 	$(MAKE) build-libs;
 	$(MAKE) validate_env NAME=$(NAME_DEBUG_EXE)
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEBUG]		Building debug version...$(RST)"
+	$(call log_msg,$(BLU),DEBUG,	Building debug version...)
 	@if [ "$(ASAN_CHECK)" = "supported" ]; then \
-		echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[DEB-INFO]	Address Sanitizer is supported and will be enabled$(RST)"; \
+		$(call log_msg,$(GRN),DEB-INFO,Address Sanitizer is supported and will be enabled); \
 		$(MAKE) --no-print-directory SANITIZE=yes debug-build; \
 	else \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-WARNING]	Address Sanitizer not enabled/supported, building with basic debug symbols$(RST)"; \
+		$(call log_msg,$(YLW),DEB-WARNING,Address Sanitizer not enabled/supported, building with basic debug symbols); \
 		$(MAKE) --no-print-directory debug-build_no_asan; \
 	fi
 
 debug-build: $(DEBUG_DIR)$(NAME)
-	@echo "[$(LOG_TIME)]$(YLWB)[$(PROJECT)]	[DEB-COMPILE]	Compiling [$(NAME_DEBUG_EXE)] exe...$(RST)"
+	$(call log_ers,$(YLW),COMPILE,[$(NAME_DEBUG_ARCHIVE)] src files successfully compiled\n)
+	$(call log_msg,$(YLWB),DEB-COMPILE,Compiling [$(NAME_DEBUG_EXE)] exe...)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(SANITIZE_COMPILE) \
 	$(TEST_FILES) -L$(DEBUG_DIR) -l$(subst lib,,$(PROJECT)) $(LIBS_LINKS) -o $(NAME_DEBUG_EXE) $(SANITIZE_LINK)
-	@echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[SUCCESS]	Debug build complete with: $(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	- Debug symbols enabled$(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	- Address sanitizer active (detects memory issues)$(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	- Undefined behavior detection active$(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	- Frame pointer preserved (for better backtraces)$(RST)"
+	$(call log_msg,$(GRNB),SUCCESS,Debug build complete with:)
+	$(call log_msg,$(BLU),DEB-INFO,- Debug symbols enabled)
+	$(call log_msg,$(BLU),DEB-INFO,- Address sanitizer active (detects memory issues))
+	$(call log_msg,$(BLU),DEB-INFO,- Undefined behavior detection active)
+	$(call log_msg,$(BLU),DEB-INFO,- Frame pointer preserved (for better backtraces))
 	@mv -f $(NAME_DEBUG_EXE) $(ASAN_LOGS) ./$(DEBUG_DIR) 2>/dev/null || true
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	[$(NAME_DEBUG_EXE)] and [$(ASAN_LOGS)] in ./$(DEBUG_DIR) $(RST)"
+	$(call log_msg,$(BLU),DEB-INFO,[$(NAME_DEBUG_EXE)] and [$(ASAN_LOGS)] in ./$(DEBUG_DIR))
 
 debug-build_no_asan: $(DEBUG_DIR)$(NAME) #OBJS_DEBUG=$() NAME_DEBUG_EXE=$(...) LIBS_LINKS=$(...)
-	@echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-INFO]	Compiling [$(NAME_DEBUG_EXE)] exe without sanitizers...$(RST)"
+	$(call log_ers,$(YLW),COMPILE,[$(NAME_DEBUG_ARCHIVE)] src files successfully compiled\n)
+	$(call log_msg,$(YLW),DEB-INFO,Compiling [$(NAME_DEBUG_EXE)] exe without sanitizers...)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(TEST_FILES) -L$(DEBUG_DIR) -l$(subst lib,,$(PROJECT)) $(LIBS_LINKS) -o $(NAME_DEBUG_EXE)
-	@echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[DEB-SUCCESS]	Debug build complete with basic debug symbols$(RST)"
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEB-INFO]	[$(NAME_DEBUG_EXE)] in ./$(DEBUG_DIR) $(RST)"
+	$(call log_msg,$(GRNB),DEB-SUCCESS,Debug build complete with basic debug symbols)
+	$(call log_msg,$(BLU),DEB-INFO,[$(NAME_DEBUG_EXE)] in ./$(DEBUG_DIR))
 
 debug-build_archive: $(DEBUG_DIR)$(NAME)
 
 $(DEBUG_DIR)$(NAME): $(OBJS_DEBUG)
-	@echo "$(ERS)[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-COMPILE]	[$(PROJECT)] src files successfully compiled with debug flags$(RST)"
-	@echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-COMPILE]	Compiling [$(PROJECT)] debug archive. Address sanitizers: $(ASAN_CHECK).$(RST)"
-		$(AR) $(NAME) $(OBJS_DEBUG)
-	@echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[DEB-SUCCESS]	[$(NAME)] debug archive succesfully compiled!$(RST)"
+	$(call log_ers,$(YLW),DEB-COMPILE,[$(PROJECT)] src files successfully compiled with debug flags)
+	$(call log_msg,$(YLW),DEB-COMPILE,Compiling [$(PROJECT)] debug archive. Address sanitizers: $(ASAN_CHECK).)
+	$(AR) $(NAME) $(OBJS_DEBUG)
+	$(call log_msg,$(GRNB),DEB-SUCCESS,[$(NAME)] debug archive succesfully compiled!)
 	@mv -f $(NAME) ./$(DEBUG_DIR) 2>/dev/null || true
 
 $(OBJS_DEBUG_DIR)%.o: $(SRCS_DIR)%.c $(DEPS)
 	@mkdir -p $(dir $@)
 ifeq ($(DETAILS),1)
-	@echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-COMPILE]	Compiling $(YLWB)$<$(YLW) in $(OBJS_DEBUG_DIR)$(RST)"
+	$(call log_obg_det,$<,$@)
 else
-	@printf "$(ERS)[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DEB-COMPILE]	Compiling $(YLWB)$<$(RST)\r"
+	$(call log_ers,$(YLW),COMPILE,Compiling $(YLWB)$<$)
 endif
+	$(CC) $(CFLAGS) -c $< -o $@
 ifeq ($(SANITIZE),yes)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(SANITIZE_COMPILE) -c $< -o $@
 else
@@ -307,24 +320,24 @@ else
 endif
 
 debug-run: debug
-	@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[DEBUG-RUN]	Running [$(NAME_DEBUG_EXE)] with sanitizers enabled...$(RST)"
+	$(call log_msg,$(BLUB),DEB-RUN,Running [$(NAME_DEBUG_EXE)] with sanitizers enabled...)
 	./$(DEBUG_DIR)$(NAME_DEBUG_EXE) $(ARGS)
 
 leak-check: debug
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEBUG-RUN]	Running [$(NAME_DEBUG_EXE)] with leak detection...$(RST)"
+	$(call log_msg,$(BLU),DEB-RUN,Running [$(NAME_DEBUG_EXE)] with leak detection...)
 	ASAN_OPTIONS=detect_leaks=1 ./$(DEBUG_DIR)$(NAME_DEBUG_EXE) $(ARGS)
 
 debug-gdb: debug
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DEBU-RUNG]	Starting [$(NAME_DEBUG_EXE)] with GDB session...$(RST)"
+	$(call log_msg,$(BLU),DEB-RUNG,Starting [$(NAME_DEBUG_EXE)] with GDB session...)
 	gdb -ex "set confirm off" -ex "b main" -ex "run" ./$(DEBUG_DIR)$(NAME_DEBUG_EXE) $(ARGS)
 
 clean-debug:
-	@echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[CLEAN]		Cleaning debug objed files...$(RST)"
+	$(call log_msg,$(RED),CLEAN,	Cleaning debug objed files...)
 	$(RM) $(OBJS_DEBUG_DIR)
 
 fclean-debug:
-	@echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[FCLEAN]	Full cleaning: Removing [$(NAME_DEBUG_EXE) $(NAME_DEBUG_VAL) $(ASAN_LOGS)]...$(RST)"
-	$(RM) $(DEBUG_DIR)
+	$(call log_msg,$(REDB),FCLEAN,Full cleaning: Removing [$(DEBUG_DIR)])
+	$(RM) $(DEBUG_DIR) $(NAME_DEBUG_EXE) $(NAME_DEBUG_VAL) $(ASAN_LOGS)
 
 re-debug:
 	$(MAKE) fclean-debug
@@ -348,31 +361,31 @@ VALGRIND_FLAGS		:= --leak-check=full --show-leak-kinds=all --track-origins=yes -
 # Example: make valgrind ARGS='"1 2 3" "5 4 10"'(multiple argv); make valgrind ARGS="1 2 3 5 4 10" (unique argv)
 valgrind:
 ifeq ($(IS_LINUX),Linux)
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Linux detected, running Valgrind natively...$(RST)"
+	$(call log_msg,$(BLU),VALGRIND,	Linux detected, running Valgrind natively...)
 	$(MAKE) valgrind-native
 else
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Non-Linux OS detected, using Docker-based Valgrind...$(RST)"
+	$(call log_msg,$(BLU),VALGRIND,Non-Linux OS detected, using Docker-based Valgrind...)
 	@if [ "$(SLEEP)" = "1" ]; then \
 		$(MAKE) valgrind-docker_sleep; \
 	else \
 		$(MAKE) valgrind-docker; \
 	fi
 endif
-	@echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[SUCCESS]	Valgrind analysis complete.$(RST)"
-	@echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[SUCCESS]	Full report saved in $(REPORT_PATH)$(RST)"
+	$(call log_msg,$(GRN),SUCCESS,Valgrind analysis complete.)
+	$(call log_msg,$(GRN),SUCCESS,Full report saved in $(REPORT_PATH))
 	$(MAKE) process-valgrind-report REPORT_PATH=$(VALGRIND_REPORT)
 	@mv -f $(NAME_DEBUG_VAL) $(VALGRIND_REPORT) ./$(DEBUG_DIR) 2>/dev/null || true
 
 valgrind-native:
 	$(MAKE) validate_env NAME=$(NAME_DEBUG_VAL)
-	@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[VALGRIND]	Running Valgrind analysis natively...$(RST)"
+	$(call log_msg,$(BLUB),VALGRIND,Running Valgrind analysis natively...)
 	@if ! command -v valgrind >/dev/null 2>&1; then \
-		echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[ERROR]	Valgrind is not installed. Please install it first.$(RST)"; \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]		Install with command: [sudo apt-get install valgrind]$(RST)"; \
+		$(call log_msg,$(RED),ERROR,	Valgrind is not installed. Please install it first.); \
+		$(call log_msg,$(YLW),INFO,	Install with command: [sudo apt-get install valgrind]); \
 		exit 1; \
 	fi; \
 	$(MAKE) debug-build_no_asan NAME_DEBUG_EXE=$(NAME_DEBUG_VAL) ASAN_CHECK="disabled" SANITIZE="false"
-	@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[VALGRIND]	Running memory analysis with Valgrind...$(RST)"
+	$(call log_msg,$(BLUB),VALGRIND,Running memory analysis with Valgrind...)
 	echo '-----------------------------------------'
 	@valgrind $(VALGRIND_FLAGS) --log-file=$(VALGRIND_REPORT) \
 		./$(NAME_DEBUG_VAL) $(ARGS)
@@ -382,32 +395,32 @@ valgrind-native:
 # Docker Valgrind setup
 valgrind-docker-setup:
 	$(MAKE) validate_env NAME=$(NAME_DEBUG_VAL)
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Preparing Docker Valgrind environment...$(RST)"
+	$(call log_msg,$(BLU),VALGRIND,Preparing Docker Valgrind environment...)
 	@mkdir -p $(DOCKER_DIR)
 	@if ! command -v docker >/dev/null 2>&1; then \
-		echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[ERROR]	Docker is not installed. Please install Docker Desktop first.$(RST)"; \
+		$(call log_msg,$(RED),ERROR,	Docker is not installed. Please install Docker Desktop first.); \
 		exit 1; \
 	fi
 	@if ! docker info >/dev/null 2>&1; then \
-		echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[ERROR]	Docker daemon is not running. Please start Docker Desktop.$(RST)"; \
+		$(call log_msg,$(RED),ERROR,	Docker daemon is not running. Please start Docker Desktop.); \
 		exit 1; \
 	fi
 	# Check if Docker image exists and build if needed
 	@if ! docker image inspect $(VALGRIND_IMAGE_NAME) >/dev/null 2>&1; then \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Creating [$(VALGRIND_DOCKERFILE)] Dockerfile...$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Creating [$(VALGRIND_DOCKERFILE)] Dockerfile...); \
 		echo "FROM ubuntu:22.04" > $(VALGRIND_DOCKERFILE); \
 		echo "ENV DEBIAN_FRONTEND=noninteractive" >> $(VALGRIND_DOCKERFILE); \
 		echo "RUN apt-get update && apt-get install -y build-essential gcc make valgrind git && apt-get clean && rm -rf /var/lib/apt/lists/*" >> $(VALGRIND_DOCKERFILE); \
 		echo "WORKDIR /app" >> $(VALGRIND_DOCKERFILE); \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Building Docker image with Valgrind...$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Building Docker image with Valgrind...); \
 		docker build -q -t $(VALGRIND_IMAGE_NAME) -f $(VALGRIND_DOCKERFILE) . ; \
-		echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[SUCCESS]	Docker image [$(VALGRIND_IMAGE_NAME)] successfully created$(RST)"; \
+		$(call log_msg,$(GRN),SUCCESS,Docker image [$(VALGRIND_IMAGE_NAME)] successfully created); \
 	else \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Using existing Docker image [$(VALGRIND_IMAGE_NAME)] for Valgrind...$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Using existing Docker image [$(VALGRIND_IMAGE_NAME)] for Valgrind...); \
 	fi
 
 valgrind-docker: valgrind-docker-setup
-	@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[INFO]		Running Valgrind analysis inside docker container...$(RST)"
+	$(call log_msg,$(BLUB),INFO,	Running Valgrind analysis inside docker container...)
 	@docker run --rm \
 		-v $(abspath ..):/parent \
 		-w /parent/$(notdir $(CURDIR)) \
@@ -437,7 +450,7 @@ valgrind-docker: valgrind-docker-setup
 			mv -f \"$(NAME_DEBUG_VAL)\" \"./$(DEBUG_DIR)\" 2>/dev/null "
 
 valgrind-docker_sleep: valgrind-docker-setup valgrind-container-start
-	@echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[INFO]		Running Valgrind analysis inside persistent docker container...$(RST)"
+	$(call log_msg,$(BLUB),INFO,	Running Valgrind analysis inside persistent docker container...)
 	@docker exec $(VALGRIND_PERS_CONT) \
 		/bin/bash -c " \
 			export MAKE=/usr/bin/make && \
@@ -464,9 +477,9 @@ valgrind-docker_sleep: valgrind-docker-setup valgrind-container-start
 			mv -f \"$(NAME_DEBUG_VAL)\" \"./$(DEBUG_DIR)\" 2>/dev/null "
 
 valgrind-container-start:
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Starting persistent Valgrind container...$(RST)"
+	$(call log_msg,$(BLU),VALGRIND,Starting persistent Valgrind container...)
 	@if ! docker ps -a --format '{{.Names}}' | grep -q $(VALGRIND_PERS_CONT); then \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Creating [$(VALGRIND_PERS_CONT)] container...$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Creating [$(VALGRIND_PERS_CONT)] container...); \
 		docker run -d --name $(VALGRIND_PERS_CONT) \
 			-v $(CURDIR):/app \
 			-w /app \
@@ -474,28 +487,28 @@ valgrind-container-start:
 			sleep infinity \
 			| xargs -I {} printf "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DOCK-INFO]	[$(VALGRIND_PERS_CONT)] ID: {}$(RST)\n"; \
 	elif ! docker ps --format '{{.Names}}' | grep -q $(VALGRIND_PERS_CONT); then \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Starting existing [$(VALGRIND_PERS_CONT)] container...$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Starting existing [$(VALGRIND_PERS_CONT)] container...); \
 		docker start $(VALGRIND_PERS_CONT); \
 	else \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VALGRIND]	Container [$(VALGRIND_PERS_CONT)] already running$(RST)"; \
+		$(call log_msg,$(BLU),VALGRIND,Container [$(VALGRIND_PERS_CONT)] already running); \
 	fi
 
 valgrind-container-stop:
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DOCK-INFO]	Stopping [$(VALGRIND_PERS_CONT)] docker container...$(RST)"
+	$(call log_msg,$(BLU),DOCK-INFO,Stopping [$(VALGRIND_PERS_CONT)] docker container...)
 	@if docker ps --format '{{.Names}}' | grep -q $(VALGRIND_PERS_CONT); then \
 		docker stop valgrind-persistent 1>/dev/null && \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DOCK-INFO]	Container [$(VALGRIND_PERS_CONT)] successfully stopped!$(RST)"; \
+		$(call log_msg,$(BLU),DOCK-INFO,Container [$(VALGRIND_PERS_CONT)] successfully stopped!); \
 	fi
 	@if docker ps -a --format '{{.Names}}' | grep -q $(VALGRIND_PERS_CONT); then \
 		docker rm $(VALGRIND_PERS_CONT) 1>/dev/null && \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[DOCK-INFO]	Container [$(VALGRIND_PERS_CONT)] successfully removed!$(RST)"; \
+		$(call log_msg,$(BLU),DOCK-INFO,Container [$(VALGRIND_PERS_CONT)] successfully removed!); \
 	fi
 
 build-docker_libs:
 	@if [ -z "$(LIBS_CLEAN)" ]; then \
-		echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[DOCK-INFO]	No libraries to build.$(RST)"; \
+		$(call log_msg,$(YLW),DOCK-INFO,No libraries to build.); \
 	else \
-		echo "[$(LOG_TIME)]$(BLUB)[$(PROJECT)]	[DOCK-INFO]	Building docker libraries without relinking...$(RST)"; \
+		$(call log_msg,$(BLUB),DOCK-INFO,Building docker libraries without relinking...); \
 		for lib_dir in $(LIBS_DIRS); do \
 			NAME=$$(basename "$$lib_dir")_docker.a; \
 			$(MAKE) -C "$$lib_dir" NAME="$$NAME" 1>/dev/null 2>/dev/null; \
@@ -503,11 +516,11 @@ build-docker_libs:
 			if [ -f "$$LIB_FILE" ]; then \
 				cp -f "$$LIB_FILE" "$(DOCKER_DIR)$$NAME"; \
 			else \
-				echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[DOCK-ERROR]	Library $$NAME was not generated in $$lib_dir!$(RST)"; \
+				$(call log_msg,$(RED),DOCK-ERROR,Library $$NAME was not generated in $$lib_dir!); \
 				exit 1; \
 			fi; \
 		done; \
-		echo "[$(LOG_TIME)]$(GRN)[$(PROJECT)]	[DOCK-SUCCESS]	All docker_libraries built and copied to $(DOCKER_DIR) $(RST)"; \
+		$(call log_msg,$(GRN),DOCK-SUCCESS,All docker_libraries built and copied to $(DOCKER_DIR)); \
 	fi
 
 # Memory allocation and access errors
@@ -530,18 +543,18 @@ VALGRIND_ERRORS = $(VALGRIND_MEM_ACCESS) $(VALGRIND_MEM_MGMT) $(VALGRIND_UNINIT)
 
 process-valgrind-report: #REPORT_PATH=$() full path needed es. ./valgrind_report.txt , standard one is debug/valgrind_report.txt
 	@if [ ! -f "$(REPORT_PATH)" ]; then \
-		echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[VAL-ERROR]	Valgrind report not found at $(REPORT_PATH).$(RST)"; \
+		$(call log_msg,$(RED),VAL-ERROR,Valgrind report not found at $(REPORT_PATH).); \
 		exit 1; \
 	fi; \
-	echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VAL-INFO]	Processing memory analysis results...$(RST)"; \
+	$(call log_msg,$(BLU),VAL-INFO,Processing memory analysis results...); \
 	if grep -q "ERROR SUMMARY: [1-9]" "$(REPORT_PATH)"; then \
 		error_count=$$(grep "ERROR SUMMARY" "$(REPORT_PATH)" | awk '{print $$4}'); \
-		echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[VAL-ERROR]	$$error_count memory errors detected$(RST)"; \
+		$(call log_msg,$(REDB),VAL-ERROR,$$error_count memory errors detected); \
 		\
 		for error in $(VALGRIND_ERRORS); do \
 			if grep -q "$$error" "$(REPORT_PATH)"; then \
 				display_error=$$(echo "$$error" | sed 's/"//g'); \
-				echo "[$(LOG_TIME)]$(RED)[$(PROJECT)]	[VAL-ERROR]	$$display_error detected:$(RST)"; \
+				$(call log_msg,$(RED),VAL-ERROR,$$display_error detected:); \
 				\
 				error_line=$$(grep -n "$$error" "$(REPORT_PATH)" | head -1 | cut -d: -f1); \
 				awk -v line=$$error_line -v err="$$error" ' \
@@ -563,24 +576,24 @@ process-valgrind-report: #REPORT_PATH=$() full path needed es. ./valgrind_report
 				\
 				count=$$(grep -c "$$error" "$(REPORT_PATH)"); \
 				if [ "$$count" -gt 1 ]; then \
-					echo "[$(LOG_TIME)]$(YLW)[$(PROJECT)]	[INFO]	... ($$count total occurrences of this error type) ...$(RST)"; \
+					$(call log_msg,$(YLW),INFO,... ($$count total occurrences of this error type) ...); \
 				fi; \
 			fi; \
 		done; \
 	else \
-		echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[VAL-SUCCESS]	No memory errors detected.$(RST)"; \
+		$(call log_msg,$(GRNB),VAL-SUCCESS,No memory errors detected.); \
 	fi; \
 	if grep -q "LEAK SUMMARY:" "$(REPORT_PATH)"; then \
-		echo "[$(LOG_TIME)]$(REDB)[$(PROJECT)]	[VAL-ERROR]	Memory leaks detected:$(RST)"; \
-		echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[VAL-INFO]	Memory leak summary:$(RST)"; \
+		$(call log_msg,$(REDB),VAL-ERROR,Memory leaks detected:); \
+		$(call log_msg,$(BLU),VAL-INFO,Memory leak summary:); \
 		grep -A 5 "LEAK SUMMARY" "$(REPORT_PATH)"; \
 	else \
-		echo "[$(LOG_TIME)]$(GRNB)[$(PROJECT)]	[VAL-SUCCESS]	No memory leaks detected.$(RST)"; \
+		$(call log_msg,$(GRNB),VAL-SUCCESS,No memory leaks detected.); \
 	fi; \
-	echo "[$(LOG_TIME)]$(YLWB)[$(PROJECT)]	[WARNING]	Always double-check $(VALGRIND_REPORT) available in: $(DEBUG_DIR)$(VALGRIND_REPORT)$(RST)";
+	$(call log_msg,$(YLWB),WARNING,Always double-check $(VALGRIND_REPORT) available in: $(DEBUG_DIR)$(VALGRIND_REPORT));
 
 re-valgrind:
-	@echo "[$(LOG_TIME)]$(BLU)[$(PROJECT)]	[INFO]		Rebuilding valgrind version from scratch$(RST)"
+	$(call log_msg,$(BLU),INFO,	Rebuilding valgrind version from scratch)
 ifeq ($(IS_LINUX),Linux)
 	$(RM) $(OBJS_DEBUG_DIR)
 else
@@ -589,6 +602,8 @@ endif
 	$(RM) $(NAME_DEBUG_VAL_PATH) $(REPORT_PATH)
 	$(MAKE) fclean-deep
 	$(MAKE) valgrind
+
+
 
 
 # Help command

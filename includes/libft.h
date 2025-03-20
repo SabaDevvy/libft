@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/18 18:32:21 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/03/20 02:09:52 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,16 @@
 
 # include "inline_functions.h"
 # include "colors.h"
+
+# define NUMS "nums"
+# define ARR "arr"
+
+# define MAX_CRITERIA "MAX"
+# define MIN_CRITERIA "MIN"
+# define MED_CRITERIA "MED"
+
+/* Type definitions */
+typedef int	(*t_find_number)(int *, size_t);
 
 /* List structure definition */
 typedef struct s_list
@@ -37,7 +47,6 @@ int		ft_toupper(int c);
 int		ft_tolower(int c);
 
 /* Number manipulation */
-int		ft_abs(int n);
 int		*ft_arrdup(const int *src, size_t size);
 
 /* String manipulation */
@@ -114,5 +123,16 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
 void	ft_lstclear(t_list **lst, void (*del)(void*));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
+
+/* Sort Algos*/
+void	quick_sort(int *arr, size_t len);
+
+/* Math functions */
+int		get_num_from(const char *type, ...);
+
+/* Math helpers */
+int		highest_number(int *arr, size_t len);
+int		lowest_number(int *arr, size_t len);
+int		median_number(int *arr, size_t len);
 
 #endif
