@@ -1,29 +1,39 @@
-# Backups and temporary files
-*.*~
+# Backup and temporary files (ignored everywhere)
+*~
 *.swp
 *.bak
 *.tmp
 *.out
 *.o
-
-# Ignore .vscode/ in every subdirectory
-**/.vscode/
-
-# Ignore macOS metadata files
-**/.DS_Store/
-
-# Tags
-tags
-
-# Test files
-*test*
 *.a
 *.exe
 
-# Don't ignore test inside of src
-!src/**/*test*
+# Editor settings (ignored everywhere)
+**/.vscode/
+**/.cache/
 
-# Compilation outputs
+# macOS metadata files (ignored everywhere)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Tags files
+tags
+TAGS
+
+# Build outputs (ignored in all project subdirectories)
 **/objs/
 **/debug/
 **/*.dSYM/
+compile_commands.json
+
+# Test and debug files (ignored everywhere EXCEPT in src directories)
+*test*
+*debug*
+!**/src/**/*test*
+!**/src/**/*debug*
+
+# Env
+.env
