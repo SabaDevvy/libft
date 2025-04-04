@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/20 02:09:52 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/03 01:03:29 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ size_t	ft_strlen_safe(const char *s);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strcpy_at(char *dst, size_t *dst_index, const char *src);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
+int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_stroccurences(const char *str, const char *little);
 char	*ft_strchr(const char *s, int c);

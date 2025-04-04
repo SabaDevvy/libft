@@ -6,12 +6,15 @@
 /*   By: gsabatin <gsabatin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:22:34 by gsabatin          #+#    #+#             */
-/*   Updated: 2024/12/14 20:22:37 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/04 01:41:07 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+* @brief Returns ptr to last node of a list
+*/
 t_list	*ft_lstlast(t_list *lst)
 {
 	if (!lst)
