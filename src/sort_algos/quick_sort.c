@@ -6,20 +6,12 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 16:05:52 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/20 02:05:50 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:53:03 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "inline_functions/arithmetic_transform.h"
 #include "libft.h"
-
-static void	swap(int *x, int *y)
-{
-	int	temp;
-
-	temp = *x;
-	*x = *y;
-	*y = temp;
-}
 
 static int	partition(int *arr, int low, int high)
 {
@@ -34,12 +26,12 @@ static int	partition(int *arr, int low, int high)
 	{
 		if (arr[j] <= pivot_value)
 		{
-			swap(&arr[i], &arr[j]);
+			ft_swap_ints(&arr[i], &arr[j]);
 			i++;
 		}
 		j++;
 	}
-	swap(&arr[i], &arr[high]);
+	ft_swap_ints(&arr[i], &arr[high]);
 	return (i);
 }
 

@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/03 01:03:29 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:48:04 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,8 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 
 /* Sort Algos*/
 void	quick_sort(int *arr, size_t len);
+void	bubble_sort(int *array, size_t size);
+void	sort_str(char **array, size_t size);
 
 /* Math functions */
 int		get_num_from(const char *type, ...);
