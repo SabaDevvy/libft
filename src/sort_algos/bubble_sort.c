@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 02:52:15 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/07 15:48:52 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:43:01 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	bubble_sort(int *array, size_t size)
 {
-	int	i;
-	int	j;
-	int	swapped;
+	size_t	i;
+	size_t	j;
+	bool	swapped;
 
 	if (!array || size < 2)
 		return ;

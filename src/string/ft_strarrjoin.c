@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 02:50:48 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/14 10:17:19 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/12 02:33:31 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ char	**ft_strarrjoin(char **str_arr, const char *str)
 
 	if (!str_arr)
 		return (ft_strarrinit(str));
-	len = ft_strarrlen_safe(str_arr);
-	new_arr = (char **)malloc(sizeof(char *) * (len + 2));
+	len = ft_strarrlen_safe((const char **)str_arr);
+	new_arr = (char **)ft_calloc(sizeof(char *), (len + 2));
 	if (!new_arr)
 		return (NULL);
 	i = -1;

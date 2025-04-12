@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 02:55:01 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/07 15:49:22 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:43:50 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ static void	ft_swap_strings(char **a, char **b)
 
 void	sort_str(char **array, size_t size)
 {
-	int	i;
-	int	j;
-	int	swapped;
+	size_t	i;
+	size_t	j;
+	bool	swapped;
 
 	if (!array || size < 2)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 18:49:04 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/15 22:44:21 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/14 01:23:33 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ char	*ft_strappend_sep_term(char *s1, const char *s2,
  * @return Newly allocated string containing s1+s2, or NULL on error
  *         Clears s2 before returning.
 */
-char	*ft_strappend_clear_s2(char *s1, char **s2_ptr)
+char	*ft_strappend_clear(char *s1, char **s2_ptr)
 {
 	char	*result;
 	char	*s2;
@@ -158,7 +158,7 @@ int	ft_strappend_replace(char **s1_ptr, char **s2_ptr, bool clear_s2)
 	if (!clear_s2)
 		result = ft_strappend(s1, s2);
 	else
-		result = ft_strappend_clear_s2(s1, s2_ptr);
+		result = ft_strappend_clear(s1, s2_ptr);
 	*s1_ptr = result;
 	return (1);
 }

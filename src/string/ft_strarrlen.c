@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:10:40 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/03/10 01:02:38 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/11 15:14:29 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 *
 * @return number of elements in strarr
 */
-size_t	ft_strarrlen(char **str_arr)
+size_t	ft_strarrlen(const char **str_arr)
 {
 	size_t	len;
 
@@ -35,7 +35,7 @@ size_t	ft_strarrlen(char **str_arr)
  *
  * @return number of elements in strarr. 0 if 0 elements of str_arr = NULL
 */
-size_t	ft_strarrlen_safe(char **str_arr)
+size_t	ft_strarrlen_safe(const char **str_arr)
 {
 	size_t	len;
 

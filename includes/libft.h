@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/07 15:48:04 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/14 01:23:58 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*ft_strdup_safe(const char *str);
 char	*ft_strappend(char *s1, const char *s2);
 char	*ft_strappend_sep_term(char *s1, const char *s2,
 			const char *sep, const char *term);
-char	*ft_strappend_clear_s2(char *s1, char **s2_ptr);
+char	*ft_strappend_clear(char *s1, char **s2_ptr);
 int		ft_strappend_replace(char **s1_ptr, char **s2_ptr, bool clear_s2);
 
 /* String transformation */
@@ -85,8 +85,8 @@ void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
 /* String array */
 char	**ft_strarrinit(const char *str);
-size_t	ft_strarrlen(char **str_arr);
-size_t	ft_strarrlen_safe(char **str_arr);
+size_t	ft_strarrlen(const char **str_arr);
+size_t	ft_strarrlen_safe(const char **str_arr);
 char	**ft_strarrjoin(char **str_arr, const char *str);
 char	**ft_strarrappend(char **str_arr, const char *str);
 char	**ft_strarrappend_shallow(char **str_arr, char *str);
@@ -94,6 +94,9 @@ char	**ft_strarrappend_free(char **str_arr, char *str);
 char	**ft_strarrappend_clear_s2(char **str_arr, char **str_ptr);
 int		ft_strarrappend_replace(char ***str_arr_ptr, char **str_ptr,
 			int clear_s2);
+char	**ft_strarrdup(const char **strarr);
+char	**strarrmerge(const char **strarr1, const char **strarr2);
+char	**ft_strarrmerge_clear(char ***strarr1_ptr, char ***strarr2_ptr);
 
 /* Clear */
 void	ft_strclear(char **str);
