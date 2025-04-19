@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 15:36:23 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/11 15:02:01 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/19 19:40:43 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**ft_strarrinit(const char *str)
 		nmemb = 2;
 	else
 		nmemb = 1;
-	new_arr = (char **)malloc(sizeof(char *) * nmemb);
+	new_arr = (char **)ft_calloc(sizeof(char *), nmemb);
 	if (!new_arr)
 		return (NULL);
 	new_arr[0] = ft_strdup_safe(str);
@@ -38,6 +38,5 @@ char	**ft_strarrinit(const char *str)
 		free(new_arr);
 		return (NULL);
 	}
-	new_arr[nmemb] = NULL;
 	return (new_arr);
 }

@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:08:08 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/12 02:32:59 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/19 19:41:33 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ char	**ft_strarrappend(char **str_arr, const char *str)
 
 	if (!str_arr)
 		return (ft_strarrinit(str));
+	if (!str)
+		return (str_arr);
 	len = ft_strarrlen_safe((const char **)str_arr);
 	new_arr = (char **)ft_calloc(sizeof(char *), (len + 2));
 	if (!new_arr)
@@ -50,8 +52,7 @@ char	**ft_strarrappend(char **str_arr, const char *str)
 			return (NULL);
 		}
 	}
-	new_arr[len] = ft_strdup_safe(str);
-	new_arr[len + 1] = NULL;
+	new_arr[len] = ft_strdup(str);
 	ft_strarrclear(&str_arr);
 	return (new_arr);
 }
@@ -85,7 +86,6 @@ char	**ft_strarrappend_shallow(char **str_arr, char *str)
 	while (++i < len)
 		new_arr[i] = str_arr[i];
 	new_arr[len] = str;
-	new_arr[len + 1] = NULL;
 	free(str_arr);
 	return (new_arr);
 }
