@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/14 01:23:58 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/04/29 18:51:48 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 char	**ft_split_argv(char const *s, char c);
 int		ft_atoi(const char *nptr);
+int		ft_atoi_base(char *str, char *base);
+char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
 long	ft_atol(const char *str);
 char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
