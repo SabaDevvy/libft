@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/29 18:51:48 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:54:12 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int		ft_atoi_base(char *str, char *base);
 char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
 long	ft_atol(const char *str);
 char	*ft_itoa(int n);
+char	*ft_dtoa(double n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
