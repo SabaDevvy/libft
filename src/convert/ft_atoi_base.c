@@ -6,13 +6,13 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:43:59 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/05/10 14:57:03 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:06:33 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	index_in_base(char c, char *base)
+static int	index_in_base(char c, const char *base)
 {
 	int	i;
 
@@ -42,7 +42,7 @@ static int	trim_and_sign(char **str)
 	return (sign);
 }
 
-static int	isvalidbase(char *base)
+static int	isvalidbase(const char *base)
 {
 	int	i;
 	int	j;
@@ -69,7 +69,7 @@ static int	isvalidbase(char *base)
 	return (1);
 }
 
-int	ft_atoi_base(char *str, char *base)
+int	ft_atoi_base(char *str, const char *base)
 {
 	int	basefrom_len;
 	int	sign;

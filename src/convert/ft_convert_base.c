@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:49:38 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/30 18:37:38 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:07:23 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	count_malloc(int nbr, int base_len)
 	return (counter);
 }
 
-static void	fill_base(int nbr, char *dest, int *pos, char *base)
+static void	fill_base(int nbr, char *dest, int *pos, const char *base)
 {
 	int	len;
 
@@ -50,7 +50,7 @@ static void	fill_base(int nbr, char *dest, int *pos, char *base)
 	dest[(*pos)++] = base[nbr % len];
 }
 
-static int	isvalidbase(char *base)
+static int	isvalidbase(const char *base)
 {
 	int	i;
 	int	j;
@@ -77,7 +77,7 @@ static int	isvalidbase(char *base)
 	return (1);
 }
 
-char	*ft_convert_base(char *nbr, char *base_from, char *base_to)
+char	*ft_convert_base(char *nbr, const char *base_from, const char *base_to)
 {
 	char	*result;
 	int		num;

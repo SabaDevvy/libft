@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 02:55:01 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/17 18:43:50 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/16 04:27:50 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,13 @@ static void	ft_swap_strings(char **a, char **b)
 	*b = temp;
 }
 
-void	sort_str(char **array, size_t size)
+/**
+ * @brief Sorts an array of strings alphabetically using bubble sort
+ *
+ * @param array Array of strings to sort
+ * @param size Number of strings in the array
+ */
+void	ft_strsort(char **array, size_t size)
 {
 	size_t	i;
 	size_t	j;

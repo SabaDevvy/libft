@@ -6,7 +6,7 @@
 /*   By: gsabatin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 18:49:04 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/14 01:23:33 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/15 18:13:26 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,34 @@ int	ft_strappend_replace(char **s1_ptr, char **s2_ptr, bool clear_s2)
 	return (1);
 }
 
+/**
+ * @brief Appends a substring to a string with proper memory management
+ *
+ * @param s1 Original string (will be freed)
+ * @param str String to extract substring from
+ * @param start Start index of substring
+ * @param len Length of substring
+ *
+ * @return New string with substring appended
+ */
+char	*ft_strappend_substr(char *s1,
+		const char *str, size_t start, size_t len)
+{
+	char	*substr;
+	char	*result;
+
+	substr = ft_substr(str, start, len);
+	if (!substr)
+	{
+		if (s1)
+			free(s1);
+		return (NULL);
+	}
+	result = ft_strappend(s1, substr);
+	if (substr)
+		free(substr);
+	return (result);
+}
 // /*
 //  * @brief Joins multiple strings with an separator and terminator
 //  *

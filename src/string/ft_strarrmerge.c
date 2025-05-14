@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 15:04:10 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/04/12 04:24:02 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:52:07 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@ char	**ft_strarrmerge_clear(char ***strarr1_ptr, char ***strarr2_ptr)
 	strarr2 = *strarr2_ptr;
 	if ((!strarr1 || !strarr1[0]) && (!strarr2 || !strarr2[0]))
 		return (NULL);
-	len = ft_strarrlen((const char **)strarr1)
-		+ ft_strarrlen((const char **)strarr2) + 1;
+	len = ft_strarrlen_safe((const char **)strarr1)
+		+ ft_strarrlen_safe((const char **)strarr2) + 1;
 	result = (char **)ft_calloc(len, sizeof(char *));
 	if (!result)
 		return (NULL);

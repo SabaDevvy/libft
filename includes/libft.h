@@ -6,7 +6,7 @@
 /*   By: gsabatin <gsabatin@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 15:00:02 by gsabatin          #+#    #+#             */
-/*   Updated: 2025/05/10 15:54:12 by gsabatin         ###   ########.fr       */
+/*   Updated: 2025/05/16 04:27:07 by gsabatin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ char	*ft_strappend(char *s1, const char *s2);
 char	*ft_strappend_sep_term(char *s1, const char *s2,
 			const char *sep, const char *term);
 char	*ft_strappend_clear(char *s1, char **s2_ptr);
+char	*ft_strappend_substr(char *s1,
+			const char *str, size_t start, size_t len);
 int		ft_strappend_replace(char **s1_ptr, char **s2_ptr, bool clear_s2);
 
 /* String transformation */
@@ -78,11 +80,10 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 char	**ft_split_argv(char const *s, char c);
 int		ft_atoi(const char *nptr);
-int		ft_atoi_base(char *str, char *base);
-char	*ft_convert_base(char *nbr, char *base_from, char *base_to);
+int		ft_atoi_base(char *str, const char *base);
+char	*ft_convert_base(char *nbr, const char *base_from, const char *base_to);
 long	ft_atol(const char *str);
 char	*ft_itoa(int n);
-char	*ft_dtoa(double n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
@@ -134,7 +135,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 /* Sort Algos*/
 void	quick_sort(int *arr, size_t len);
 void	bubble_sort(int *array, size_t size);
-void	sort_str(char **array, size_t size);
+void	ft_strsort(char **array, size_t size);
 
 /* Math functions */
 int		get_num_from(const char *type, ...);
